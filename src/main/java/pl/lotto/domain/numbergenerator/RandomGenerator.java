@@ -1,32 +1,31 @@
 package pl.lotto.domain.numbergenerator;
 
-import java.security.SecureRandom;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 
-public class RandomGenerator implements RandomNumberGenerable {
-    private final int LOWER_BAND = 1;
-    private final int UPPER_BAND = 99;
+class RandomGenerator implements RandomNumberGenerable {
 
-    private final int RANDOM_NUMBER_BAND = (UPPER_BAND - LOWER_BAND) + 1;
+    private static final int LOWER_BAND = 1;
+    private static final int UPPER_BAND = 99;
+
+    private final OneRandomNumberFetcher client;
+
+    RandomGenerator(OneRandomNumberFetcher client) {
+        this.client = client;
+    }
 
     public Set<Integer> generateSixRandomNumbers() {
         Set<Integer> winningNumbers = new HashSet<>();
-        while (isAmountOfNumberLowerThanSix(winningNumbers)){
-        int randomNumber = generateRandom();
-        winningNumbers.add(randomNumber);
-    }
-    return  winningNumbers;
-}
-
-    private boolean isAmountOfNumberLowerThanSix(Set<Integer> winningNumbers){
-return winningNumbers.size() <6;
+        while (isAmountOfNumbersLowerThanSix(winningNumbers)) {
+            OneRandomNumberResponseDto randomNumberResponseDto = client.retrieveOneRandomNumber(LOWER_BAND, UPPER_BAND);
+            int randomNumber = randomNumberResponseDto.number();
+            winningNumbers.add(randomNumber);
+        }
+        return winningNumbers;
     }
 
-    private int generateRandom(){
-        Random random = new SecureRandom();
-        return random.nextInt(RANDOM_NUMBER_BAND) + 1;
-
+    private boolean isAmountOfNumbersLowerThanSix(Set<Integer> winningNumbers) {
+        return winningNumbers.size() < 6;
     }
 }
