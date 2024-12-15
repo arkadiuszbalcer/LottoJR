@@ -2,9 +2,11 @@ package pl.lotto.domain.numbergenerator;
 
 
 
+import org.springframework.stereotype.Component;
+
 import java.security.SecureRandom;
 import java.util.Random;
-
+@Component
 public class SecureOneRandomNumberFetcher implements OneRandomNumberFetcher{
 
     @Override

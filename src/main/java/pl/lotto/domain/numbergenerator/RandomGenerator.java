@@ -3,17 +3,18 @@ package pl.lotto.domain.numbergenerator;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
-class RandomGenerator implements RandomNumberGenerable {
+@Component
+@AllArgsConstructor
+public class RandomGenerator implements RandomNumberGenerable {
 
     private static final int LOWER_BAND = 1;
     private static final int UPPER_BAND = 99;
 
     private final OneRandomNumberFetcher client;
 
-    RandomGenerator(OneRandomNumberFetcher client) {
-        this.client = client;
-    }
+
 
     public Set<Integer> generateSixRandomNumbers() {
         Set<Integer> winningNumbers = new HashSet<>();
