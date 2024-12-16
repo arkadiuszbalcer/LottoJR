@@ -1,9 +1,11 @@
 package pl.lotto.domain.numbergenerator;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+@AllArgsConstructor
 @Component
 public class WinningNumbersRepositoryTestImpl implements WinningNumbersRepository {
 

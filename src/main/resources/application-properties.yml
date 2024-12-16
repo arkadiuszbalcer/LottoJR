@@ -1,1 +1,4 @@
-logging.level.org.springframework.context.annotation=DEBUG
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/lotto-web
