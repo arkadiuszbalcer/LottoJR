@@ -12,7 +12,7 @@ import pl.lotto.domain.numberreceiver.NumberReceiverFacade;
 @AllArgsConstructor
 public class WinningNumbersGeneratorFacade {
 @Autowired
-    private final RandomNumberGenerable winningNumberGenerator;
+    private final RandomNumberGenerable randomGenerable;
 @Autowired
     private final WinningNumberValidator winningNumberValidator;
 @Autowired
@@ -22,7 +22,8 @@ public class WinningNumbersGeneratorFacade {
 
     public WinningNumbersDto generateWinningNumbers() {
         LocalDateTime nextDrawDate = numberReceiverFacade.retrieveNextDrawDate();
-        Set<Integer> winningNumbers = winningNumberGenerator.generateSixRandomNumbers();
+        SixRandomNumbersDto dto = randomGenerable.generateSixRandomNumbers();
+       Set<Integer> winningNumbers = dto.numbers();
         winningNumberValidator.validate(winningNumbers);
         winningNumbersRepository.save(WinningNumbers.builder()
                 .winningNumbers(winningNumbers)
