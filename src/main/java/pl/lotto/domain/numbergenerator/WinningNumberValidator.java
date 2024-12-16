@@ -1,7 +1,9 @@
 package pl.lotto.domain.numbergenerator;
 
-import java.util.Set;
+import org.springframework.stereotype.Service;
 
+import java.util.Set;
+@Service
 public class WinningNumberValidator {
     private final int LOWER_BAND = 0;
     private final int UPPER_BAND = 99;
