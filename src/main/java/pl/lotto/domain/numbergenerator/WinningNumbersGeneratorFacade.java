@@ -3,26 +3,21 @@ package pl.lotto.domain.numbergenerator;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import pl.lotto.domain.numbergenerator.dto.WinningNumbersDto;
 import pl.lotto.domain.numberreceiver.NumberReceiverFacade;
 
-@Service
+
 @AllArgsConstructor
 public class WinningNumbersGeneratorFacade {
-@Autowired
     private final RandomNumberGenerable randomGenerable;
-@Autowired
     private final WinningNumberValidator winningNumberValidator;
-@Autowired
     private final WinningNumbersRepository winningNumbersRepository;
-@Autowired
     private final NumberReceiverFacade numberReceiverFacade;
+    private final WinningNumbersGeneratorFacadeConfigurationProperties properties;
 
     public WinningNumbersDto generateWinningNumbers() {
         LocalDateTime nextDrawDate = numberReceiverFacade.retrieveNextDrawDate();
-        SixRandomNumbersDto dto = randomGenerable.generateSixRandomNumbers();
+        SixRandomNumbersDto dto = randomGenerable.generateSixRandomNumbers(properties.count(), properties.lowerBand(), properties.upperBand());
        Set<Integer> winningNumbers = dto.numbers();
         winningNumberValidator.validate(winningNumbers);
         winningNumbersRepository.save(WinningNumbers.builder()
@@ -31,6 +26,7 @@ public class WinningNumbersGeneratorFacade {
                 .build());
         return WinningNumbersDto.builder()
                 .winningNumbers(winningNumbers)
+                .date(nextDrawDate)
                 .build();
     }
 

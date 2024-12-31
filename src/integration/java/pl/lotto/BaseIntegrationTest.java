@@ -17,7 +17,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
-@SpringBootTest(classes = SpringbootApp.class )
+@SpringBootTest(classes = SpringbootApp.class)
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @Testcontainers
@@ -37,10 +37,11 @@ public class BaseIntegrationTest {
     public static WireMockExtension wireMockServer = WireMockExtension.newInstance()
             .options(wireMockConfig().dynamicPort())
             .build();
+
     @DynamicPropertySource
-    public static void  propertyOverride(DynamicPropertyRegistry registry){
-        registry.add("spring.data.mongodb.uri",mongoDBContainer::getReplicaSetUrl);
-        registry.add("offer.http.client.config.uri", ()-> WIRE_MOCK_HOST);
-        registry.add("offer.http.client.config.uri",()-> wireMockServer.getPort());
+    public static void propertyOverride(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+        registry.add("lotto.number-generator.http.client.config.port", () -> wireMockServer.getPort());
+        registry.add("lotto.number-generator.http.client.config.uri", () -> WIRE_MOCK_HOST);
     }
 }
