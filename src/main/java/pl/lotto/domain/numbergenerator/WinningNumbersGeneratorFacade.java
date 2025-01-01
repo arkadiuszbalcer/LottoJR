@@ -3,6 +3,7 @@ package pl.lotto.domain.numbergenerator;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import pl.lotto.domain.numbergenerator.dto.WinningNumbersDto;
 import pl.lotto.domain.numberreceiver.NumberReceiverFacade;
 
@@ -17,16 +18,17 @@ public class WinningNumbersGeneratorFacade {
 
     public WinningNumbersDto generateWinningNumbers() {
         LocalDateTime nextDrawDate = numberReceiverFacade.retrieveNextDrawDate();
-        SixRandomNumbersDto dto = randomGenerable.generateSixRandomNumbers(properties.count(), properties.lowerBand(), properties.upperBand());
-       Set<Integer> winningNumbers = dto.numbers();
+        SixRandomNumbersDto sixRandomNumbersDto = randomGenerable.generateSixRandomNumbers(properties.count(), properties.lowerBand(), properties.upperBand());
+       Set<Integer> winningNumbers = sixRandomNumbersDto.numbers();
         winningNumberValidator.validate(winningNumbers);
-        winningNumbersRepository.save(WinningNumbers.builder()
+        WinningNumbers winningNumbersDocument = WinningNumbers.builder()
                 .winningNumbers(winningNumbers)
                 .date(nextDrawDate)
-                .build());
+                .build();
+       WinningNumbers save = winningNumbersRepository.save(winningNumbersDocument);
         return WinningNumbersDto.builder()
-                .winningNumbers(winningNumbers)
-                .date(nextDrawDate)
+                .winningNumbers(save.winningNumbers())
+                .date(save.date())
                 .build();
     }
 

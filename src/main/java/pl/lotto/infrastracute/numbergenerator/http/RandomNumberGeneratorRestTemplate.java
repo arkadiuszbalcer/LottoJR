@@ -1,31 +1,33 @@
 package pl.lotto.infrastracute.numbergenerator.http;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.lotto.domain.numbergenerator.RandomNumberGenerable;
 import pl.lotto.domain.numbergenerator.SixRandomNumbersDto;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @AllArgsConstructor
 @Log4j2
 public class RandomNumberGeneratorRestTemplate implements RandomNumberGenerable {
+
+    public static final int MAXIMAL_WINNING_NUMBERS = 6;
+    public static final String RANDOM_NUMBER_SERVICE_PATH = "/api/v1.0/random";
+
     private final RestTemplate restTemplate;
     private final String uri;
     private final int port;
-    public static final int MAXIMAL_WINNING_NUMBERS = 6;
-    public static final String RANDOM_NUMBER_SERVICE_PATH = "/api/v1.0/random";
 
     @Override
     public SixRandomNumbersDto generateSixRandomNumbers(int count, int lowerBand, int upperBand) {
@@ -44,7 +46,7 @@ public class RandomNumberGeneratorRestTemplate implements RandomNumberGenerable 
                     .build();
         } catch (ResourceAccessException e) {
             log.error("Error while fetching winning numbers using http client: " + e.getMessage());
-            return SixRandomNumbersDto.builder().build();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -54,6 +56,7 @@ public class RandomNumberGeneratorRestTemplate implements RandomNumberGenerable 
                 .queryParam("max", upperBand)
                 .queryParam("count", count)
                 .toUriString();
+        log.info("Request URL: {}", url);
         ResponseEntity<List<Integer>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
@@ -66,8 +69,8 @@ public class RandomNumberGeneratorRestTemplate implements RandomNumberGenerable 
     private Set<Integer> getSixRandomDistinctNumbers(ResponseEntity<List<Integer>> response) {
         List<Integer> numbers = response.getBody();
         if (numbers == null) {
-            log.error("Response Body was null returning empty collection");
-            return Collections.emptySet();
+            log.error("Response Body was null");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
         log.info("Success Response Body Returned: " + response);
         Set<Integer> distinctNumbers = new HashSet<>(numbers);
@@ -75,6 +78,8 @@ public class RandomNumberGeneratorRestTemplate implements RandomNumberGenerable 
                 .limit(6)
                 .collect(Collectors.toSet());
     }
+
+
     private String getUrlForService(String service) {
         return uri + ":" + port + service;
     }
