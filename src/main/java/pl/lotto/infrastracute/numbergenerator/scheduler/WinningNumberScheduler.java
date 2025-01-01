@@ -12,12 +12,12 @@ import pl.lotto.domain.numbergenerator.dto.WinningNumbersDto;
 @Log4j2
 public class WinningNumberScheduler {
     private final WinningNumbersGeneratorFacade winningNumbersGeneratorFacade;
-    @Scheduled(cron = "${lotto.number-generator.lotteryRunOccurence}")
-
-    public void generateWinningNumbers(){
-     WinningNumbersDto winningNumbersDto = winningNumbersGeneratorFacade.generateWinningNumbers();
+    @Scheduled(cron = "${lotto.number-generator.lotteryRunOccurrence}")
+    public WinningNumbersDto generateWinningNumbers() {
+        log.info("winning number scheduler started");
+        WinningNumbersDto winningNumbersDto = winningNumbersGeneratorFacade.generateWinningNumbers();
         log.info(winningNumbersDto.getWinningNumbers());
         log.info(winningNumbersDto.getDate());
-
+        return winningNumbersDto;
     }
 }

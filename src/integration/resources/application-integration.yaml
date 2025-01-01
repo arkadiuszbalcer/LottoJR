@@ -1,3 +1,0 @@
-lotto:
-  number-generator:
-    lotteryRunOccurence: "* */10 * * * *"
