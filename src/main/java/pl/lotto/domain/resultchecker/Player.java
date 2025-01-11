@@ -2,6 +2,7 @@ package pl.lotto.domain.resultchecker;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Builder;
+import lombok.Value;
 import org.springframework.data.annotation.Id;
 
 

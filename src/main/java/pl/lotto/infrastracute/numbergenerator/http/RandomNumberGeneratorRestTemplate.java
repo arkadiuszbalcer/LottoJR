@@ -20,6 +20,7 @@ import pl.lotto.domain.numbergenerator.SixRandomNumbersDto;
 
 @AllArgsConstructor
 @Log4j2
+
 public class RandomNumberGeneratorRestTemplate implements RandomNumberGenerable {
 
     public static final int MAXIMAL_WINNING_NUMBERS = 6;
