@@ -28,8 +28,8 @@ public class TicketRepositoryTestImpl implements TicketRepository {
 
     @Override
     public Ticket save(Ticket ticket) {
-        tickets.put(ticket.hash(), ticket);
-        return ticket;
+
+        return  tickets.put(ticket.hash(), ticket);
     }
 
     @Override

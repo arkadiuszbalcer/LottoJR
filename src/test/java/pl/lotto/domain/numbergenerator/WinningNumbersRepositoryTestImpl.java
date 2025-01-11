@@ -62,7 +62,7 @@ public class WinningNumbersRepositoryTestImpl implements WinningNumbersRepositor
     }
 
     @Override
-    public Iterable<WinningNumbers> findAllById(Iterable<String> strings) {
+    public List<WinningNumbers> findAllById(Iterable<String> strings) {
         return null;
     }
 
